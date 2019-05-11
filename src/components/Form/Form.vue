@@ -1,28 +1,52 @@
 <template>
 	<div class="form">
-		<h2>Gagnez un Dodow !</h2>
-		<form class="form-fields" action>
-			<FormInput placeholder="Ma ville" :field_validator="validators.cityValidator"/>
-			<FormInput placeholder="Mon code postal" :field_validator="validators.postalCodeValidator"/>
+		<h2 class="form-title">Gagnez un Dodow !</h2>
+		<form>
+			<div class="form-fields">
+				<FormInput
+					v-for="input in inputs"
+					:key="input.label"
+					:placeholder="input.label"
+					:validator="input.validator"
+					:formatter="input.formatter"
+					style="margin: 20px;"
+				/>
+			</div>
+			<FormButton :active="isFormValid"/>
 		</form>
 	</div>
 </template>
 
 <script>
-import FormInput from "@/components/Form/FormInput.vue";
-import postalCodeValidator from "@/validators/postalCodeValidator.js";
-import cityValidator from "@/validators/cityValidator.js";
+import FormInput from "@/components/Form/FormInput/FormInput.vue";
+import postalCodeValidator from "@/components/Form/FormInput/postalCode/postalCodeValidator.js";
+import postalCodeFormatter from "@/components/Form/FormInput/postalCode/postalCodeFormatter.js";
+import cityValidator from "@/components/Form/FormInput/city/cityValidator.js";
+
+import FormButton from "@/components/Form/FormButton/FormButton.vue";
 
 export default {
 	name: "Form",
-	components: { FormInput },
+	components: { FormInput, FormButton },
 	data: function() {
 		return {
-			validators: {
-				postalCodeValidator,
-				cityValidator
-			}
+			inputs: {
+				city: {
+					label: "Ma ville",
+					validator: cityValidator,
+					formatter: null
+				},
+				postalCode: {
+					label: "Mon code postal",
+					validator: postalCodeValidator,
+					formatter: postalCodeFormatter
+				}
+			},
+			isFormValid: null
 		};
+	},
+	computed: {
+		isFormValid: function() {}
 	}
 };
 </script>
@@ -30,12 +54,14 @@ export default {
 <style scoped>
 .form {
 	padding: 1em;
+	min-height: 500px;
 
-	color: white;
-	text-shadow: 2px 1px 0px hsla(0, 0%, 0%, 0.1);
 	background-color: hsl(180, 33%, 68%);
 }
-
+.form-title {
+	color: white;
+	text-shadow: 2px 1px 0px hsla(0, 0%, 0%, 0.1);
+}
 .form-fields {
 	display: flex;
 	align-content: center;

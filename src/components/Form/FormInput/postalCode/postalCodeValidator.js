@@ -1,20 +1,24 @@
 const isDigits = input => {
-	const isDigitsRegex = /^\d+$/;
-	const isDigits = isDigitsRegex.test(input);
+	const digitsRegex = /^\d+$/;
 
-	return isDigits;
+	return digitsRegex.test(input);
 };
 
 export default input => {
-	const hasOnlyDigits = isDigits(input);
-	const hasCorrectLength = input.length === 7;
+	if (!input)
+		return {
+			valid: false,
+			message: 'Ce champ est obligatoire.',
+		};
 
+	const hasOnlyDigits = isDigits(input);
 	if (!hasOnlyDigits)
 		return {
 			valid: false,
 			message: 'Un code postal ne doit contenir que des chiffres.',
 		};
 
+	const hasCorrectLength = input.length === 7;
 	if (!hasCorrectLength)
 		return {
 			valid: false,

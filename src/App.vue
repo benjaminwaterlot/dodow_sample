@@ -22,4 +22,7 @@ export default {
 	margin-top: 60px;
 	padding: 0em;
 }
+* {
+	box-sizing: border-box;
+}
 </style>
