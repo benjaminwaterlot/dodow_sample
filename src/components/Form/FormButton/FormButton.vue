@@ -1,6 +1,9 @@
 <template>
 	<div>
-		<button class="form-button">Valider ⭐</button>
+		<button class="form-button">
+			<span class="label-text">Valider</span>
+			<span class="label-star">⭐</span>
+		</button>
 	</div>
 </template>
 
@@ -20,7 +23,7 @@ export default {
 
 <style scoped>
 .form-button {
-	padding: 0.5em 3em;
+	padding: 0.5em 1.5em;
 
 	font-size: 1.1em;
 	font-weight: 500;
@@ -41,5 +44,12 @@ export default {
 	transform: rotate(-4deg);
 }
 .form-button:focus {
+}
+
+.label-text {
+	font-size: 1.1em;
+}
+.label-star {
+	margin-left: .8em;
 }
 </style>

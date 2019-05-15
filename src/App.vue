@@ -1,7 +1,5 @@
 <template>
 	<div id="app">
-		<h1>Jeu concours</h1>
-		<!-- <p>Gagnez un Dodow !</p> -->
 		<Form></Form>
 	</div>
 </template>
@@ -15,12 +13,17 @@ export default {
 </script>
 
 <style>
+body {
+	margin: 0;
+	background-image: url("/background.jpg");
+}
 #app {
+	margin: 0;
+	padding: 50px;
+
 	font-family: "Avenir", Helvetica, Arial, sans-serif;
 	text-align: center;
 	color: #2c3e50;
-	margin-top: 60px;
-	padding: 0em;
 }
 * {
 	box-sizing: border-box;
