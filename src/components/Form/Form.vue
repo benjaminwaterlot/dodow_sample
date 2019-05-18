@@ -1,20 +1,19 @@
 <template>
-	<div class="form">
+	<div>
 		<h1 class="form-title">
 			<span class="subtitle">Jeu concours</span>
 			<br>
 			<span>Gagnez un Dodow !</span>
 		</h1>
-		<form>
+		<form @submit.prevent="submitForm">
 			<div class="form-fields">
 				<FormInput
-					v-for="input in inputs"
-					:key="input.label"
-					:placeholder="input.label"
-					:validator="input.validator"
-					:formatter="input.formatter"
-					@validationEvent="updateFormState"
-					style="margin: 20px;"
+					v-for="(input, index) in inputs"
+					v-bind="input"
+					:key="input.placeholder"
+					:fieldIndex="index"
+					@validationEvent="validateFormField"
+					@inputEvent="updateFormContent"
 				/>
 			</div>
 			<FormButton :active="isFormValid"/>
@@ -28,7 +27,6 @@ import FormButton from "@/components/Form/FormButton/FormButton.vue";
 
 import postalCodeValidator from "@/components/Form/FormInput/postalCode/postalCodeValidator.js";
 import postalCodeFormatter from "@/components/Form/FormInput/postalCode/postalCodeFormatter.js";
-
 import cityValidator from "@/components/Form/FormInput/city/cityValidator.js";
 
 export default {
@@ -36,39 +34,69 @@ export default {
 	components: { FormInput, FormButton },
 	data: function() {
 		return {
-			inputs: {
-				city: {
-					label: "Ma ville",
+			inputs: [
+				{
+					placeholder: "Ma ville",
+					content: "",
+					state: { valid: true, message: "" },
 					validator: cityValidator,
 					formatter: null
 				},
-				postalCode: {
-					label: "Mon code postal",
+				{
+					placeholder: "Mon code postal",
+					content: "",
+					state: { valid: true, message: "" },
 					validator: postalCodeValidator,
 					formatter: postalCodeFormatter
 				}
-			},
-			isFormValid: false
+			]
 		};
 	},
 	methods: {
-		updateFormState: function(info) {
-			// TODO : COMPLETE
-			console.log(info);
+		updateFormContent: function([fieldIndex, newFieldContent]) {
+			const input = this.inputs[fieldIndex];
+
+			input.content = newFieldContent;
+		},
+		validateFormField: function(fieldIndex) {
+			const input = this.inputs[fieldIndex];
+			const { validator } = input;
+
+			// Update the status of this input's state.
+			input.state = validator
+				? validator(input.content)
+				: { valid: true, message: "" };
+		},
+		submitForm: function() {
+			// Revalidate all fields now to stop user from using devtools to forge inputs.
+			for (const [index, input] of this.inputs.entries()) {
+				this.validateFormField(index);
+			}
+
+			// Send a simplified version of the form content.
+			if (this.isFormValid) {
+				const toSubmit = this.inputs.map(({ placeholder, content }) => ({
+					placeholder,
+					content
+				}));
+
+				this.$emit("formSubmitted", toSubmit);
+			}
+		}
+	},
+	computed: {
+		isFormValid: function() {
+			for (const input of this.inputs) {
+				if (!input.state.valid) return false;
+			}
+
+			return true;
 		}
 	}
 };
 </script>
 
 <style scoped>
-.form {
-	margin: auto;
-	padding: 3em 1em;
-	min-height: 500px;
-
-	background-color: hsl(180, 33%, 68%);
-	border-radius: 0.3em;
-}
 .form-title {
 	color: white;
 	text-shadow: 2px 1px 0px hsla(0, 0%, 0%, 0.1);

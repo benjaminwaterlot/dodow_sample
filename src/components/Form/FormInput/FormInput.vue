@@ -2,14 +2,14 @@
 	<div class="form-input-wrapper">
 		<input
 			class="form-input"
-			:class="fieldState.valid ? '' : 'invalid'"
+			:class="state.valid ? '' : 'invalid'"
 			type="text"
 			:placeholder="placeholder"
 			:value="formattedValue"
 			@input="handleInput"
 		>
 		<div class="error-container">
-			<p class="error-message" v-if="!fieldState.valid">{{ fieldState.message }}</p>
+			<p class="error-message" v-if="!state.valid">{{ state.message }}</p>
 		</div>
 	</div>
 </template>
@@ -20,48 +20,40 @@ import { debounce } from "lodash";
 export default {
 	name: "FormInput",
 	props: {
+		fieldIndex: { type: Number, required: true },
 		placeholder: { type: String, required: true },
+		content: { type: String, required: true },
 		validator: { type: Function, required: false, default: null },
+		state: { type: Object, required: true },
 		formatter: { type: Function, required: false, default: null }
 	},
 	data: function() {
 		return {
-			fieldValue: "",
-			fieldState: { valid: true, message: "" },
 			delayedValidation: null
 		};
 	},
 	mounted: function() {
-		this.delayedValidation = debounce(this.validateInput, 300);
+		this.delayedValidation = debounce(this.validateInput, 350);
 	},
 	methods: {
 		handleInput: function(e) {
-			const newValue = e.target.value;
+			// Remove hyphens from the input, we want only our hyphen.
+			const newValue = e.target.value.replace(/-/g, "");
 
-			// Remove hyphens from the input, we want only ours.
-			this.fieldValue = newValue.replace(/-/g, "");
+			// Update this input's content through the Form parent.
+			this.$emit("inputEvent", [this.fieldIndex, newValue]);
 
-			// Call validation
-			this.callInputValidation(this.fieldValue);
-		},
-		callInputValidation: function(value) {
-			this.delayedValidation(value);
+			// Call validation through the Form parent.
+			this.delayedValidation(this.content);
 		},
 		validateInput: function() {
-			const validationNeeded = this.validator;
-
-			// Update the state of this input's validity.
-			this.fieldState = validationNeeded
-				? this.validator(this.fieldValue)
-				: { valid: true, message: "" };
-
-			// Send an event to the parent Form to send him this input's validity.
-			this.$emit("validationEvent", this.fieldState.valid);
+			// Request a validation of this field from the Form parent.
+			this.$emit("validationEvent", this.fieldIndex);
 		}
 	},
 	computed: {
 		formattedValue: function() {
-			return this.formatter ? this.formatter(this.fieldValue) : this.fieldValue;
+			return this.formatter ? this.formatter(this.content) : this.content;
 		}
 	}
 };
@@ -69,7 +61,7 @@ export default {
 
 <style scoped>
 .form-input-wrapper {
-	margin: 0.5em;
+	margin: 0.8em;
 	flex-grow: 1;
 	max-width: 400px;
 }

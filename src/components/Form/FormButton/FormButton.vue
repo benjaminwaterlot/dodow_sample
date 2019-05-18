@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<button class="form-button">
+		<button class="form-button" :style="active ? `` : `opacity: .7`">
 			<span class="label-text">Valider</span>
 			<span class="label-star">⭐</span>
 		</button>
@@ -10,7 +10,6 @@
 <script>
 export default {
 	name: "FormButton",
-	components: {},
 	props: { active: { type: Boolean, required: true } },
 	data: function() {
 		return {};
@@ -50,6 +49,6 @@ export default {
 	font-size: 1.1em;
 }
 .label-star {
-	margin-left: .8em;
+	margin-left: 0.8em;
 }
 </style>
