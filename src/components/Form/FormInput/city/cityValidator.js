@@ -1,5 +1,5 @@
 const checkAlphaNums = input => {
-	const alphanumsRegex = /^[a-zA-Z\u00C0-\u017F]+$/;
+	const alphanumsRegex = /^[0-9a-zA-Z\u00C0-\u017F]+$/;
 
 	return alphanumsRegex.test(input);
 };
