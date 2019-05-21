@@ -2,7 +2,7 @@
 	<div class="form-input-wrapper">
 		<input
 			class="form-input"
-			:class="state.valid ? '' : 'invalid'"
+			:class="state.valid ? null : 'invalid'"
 			type="text"
 			:placeholder="placeholder"
 			:value="formattedValue"
@@ -33,7 +33,10 @@ export default {
 		};
 	},
 	mounted: function() {
-		this.delayedValidation = debounce(this.validateInput, 350);
+		const VALIDATION_TIME = 400;
+
+		// This function will be called X milliseconds after the last input event.
+		this.delayedValidation = debounce(this.validateInput, VALIDATION_TIME);
 	},
 	methods: {
 		handleInput: function(e) {

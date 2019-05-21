@@ -3,7 +3,7 @@
 		<div class="app-wrapper">
 			<transition name="component-fade" mode="out-in">
 				<Form v-if="status === 'ONGOING'" @formSubmitted="handleSubmission"/>
-				<Recap v-else-if="status === 'SUBMITTED'" :formData="formData"/>
+				<Recap v-else-if="status === 'SUBMITTED'" :formData="formData" @resetForm="handleReset"/>
 			</transition>
 		</div>
 	</div>
@@ -26,6 +26,10 @@ export default {
 		handleSubmission: function(formData) {
 			this.formData = formData;
 			this.status = "SUBMITTED";
+		},
+		handleReset: function() {
+			this.formData = null;
+			this.status = "ONGOING";
 		}
 	}
 };
@@ -49,8 +53,9 @@ body {
 }
 .app-wrapper {
 	margin: auto;
-	padding: 3em 1em;
+	padding: 1em;
 	min-height: 500px;
+	max-width: 1200px;
 
 	background-color: hsl(180, 33%, 68%);
 	border-radius: 0.3em;
@@ -58,10 +63,11 @@ body {
 
 .component-fade-enter-active,
 .component-fade-leave-active {
-	transition: opacity 0.3s ease;
+	transition: all 0.3s ease;
 }
 .component-fade-enter,
 .component-fade-leave-to {
 	opacity: 0;
+	transform: translateX(-30px);
 }
 </style>

@@ -69,17 +69,25 @@ export default {
 		},
 		submitForm: function() {
 			// Revalidate all fields now to stop user from using devtools to forge inputs.
-			for (const [index, input] of this.inputs.entries()) {
+			for (const [index] of this.inputs.entries()) {
 				this.validateFormField(index);
 			}
 
-			// Send a simplified version of the form content.
 			if (this.isFormValid) {
+				// Keep only the relevant data
 				const toSubmit = this.inputs.map(({ placeholder, content }) => ({
 					placeholder,
 					content
 				}));
 
+				// As we have no server ready, we log here the data we would send instead.
+				// eslint-disable-next-line
+				console.info(
+					"This is a simulation of the info sent to the server.",
+					toSubmit
+				);
+
+				// Inform the app that we can now switch to the Recap screen.
 				this.$emit("formSubmitted", toSubmit);
 			}
 		}
@@ -98,6 +106,7 @@ export default {
 
 <style scoped>
 .form-title {
+	margin: 1em;
 	color: white;
 	text-shadow: 2px 1px 0px hsla(0, 0%, 0%, 0.1);
 }
